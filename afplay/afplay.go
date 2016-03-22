@@ -2,7 +2,7 @@ package afplay
 
 import(
   log "github.com/Sirupsen/logrus"
-  "github.com/samarudge/homecontrol-tubestatus/fetcher"
+  "github.com/samarudge/tfl-announcements/fetcher"
   "io/ioutil"
   "os"
   "os/exec"

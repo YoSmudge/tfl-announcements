@@ -4,7 +4,7 @@ import(
   "fmt"
   "strings"
   "sort"
-  "github.com/samarudge/homecontrol-tubestatus/language"
+  "github.com/samarudge/tfl-announcements/language"
 )
 
 type StatusUpdate struct{

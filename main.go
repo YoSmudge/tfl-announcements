@@ -1,8 +1,8 @@
 package main
 
 import(
-  "github.com/samarudge/homecontrol-tubestatus/fetcher"
-  "github.com/samarudge/homecontrol-tubestatus/afplay"
+  "github.com/samarudge/tfl-announcements/fetcher"
+  "github.com/samarudge/tfl-announcements/afplay"
   log "github.com/Sirupsen/logrus"
   "github.com/voxelbrain/goptions"
   "github.com/tuxychandru/pubsub"

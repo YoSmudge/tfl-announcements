@@ -1,20 +1,17 @@
 SRC=$(wildcard **/*.go)
 LANGUAGE=$(wildcard language/*.yml)
 
-all: homecontrol-tubestatus
+all: tfl-announcements
 
-homecontrol-tubestatus: $(SRC) main.go language/strings.go
+tfl-announcements: $(SRC) main.go language/strings.go
 	go build
 
 language/strings.go: $(LANGUAGE)
 	${GOPATH}/bin/go-bindata -o language/strings.go -pkg language -ignore language/*.go language/*.yml
 
 run: all
-	./homecontrol-tubestatus --verbose
-
-test: all
-	./homecontrol-tubestatus --verbose --once
+	./tfl-announcements --verbose
 
 clean:
 	rm -f language/strings.go
-	rm -f homecontrol-tubestatus
+	rm -f tfl-announcements

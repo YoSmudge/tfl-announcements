@@ -1,9 +1,9 @@
 package fetcher
 
 import(
-  "github.com/samarudge/homecontrol-tubestatus/tfl"
-  "github.com/samarudge/homecontrol-tubestatus/ivona"
-  "github.com/samarudge/homecontrol-tubestatus/config"
+  "github.com/samarudge/tfl-announcements/tfl"
+  "github.com/samarudge/tfl-announcements/ivona"
+  "github.com/samarudge/tfl-announcements/config"
   "time"
   "math"
   log "github.com/Sirupsen/logrus"

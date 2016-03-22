@@ -1,4 +1,4 @@
-package: github.com/samarudge/homecontrol-tubestatus
+package: github.com/samarudge/tfl-announcements
 import:
 - package: github.com/Sirupsen/logrus
 - package: github.com/hoisie/mustache
