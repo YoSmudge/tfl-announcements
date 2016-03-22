@@ -45,12 +45,20 @@ func doStatus(a *tfl.Api, feed *pubsub.PubSub, isFull bool) {
   }
 
   if statusText != "" {
-    i := ivona.New(config.Config.Ivona.Key, config.Config.Ivona.Secret)
+    i, err := ivona.New(config.Config.Ivona.Key, config.Config.Ivona.Secret)
+    if err != nil{
+      log.WithFields(log.Fields{
+        "error": err,
+      }).Error("Error creating Ivona connection")
+      return
+    }
+
     audio, err := i.GetSpeak(statusText)
     if err != nil{
       log.WithFields(log.Fields{
         "error": err,
-      }).Warning("Error talking to Ivona")
+      }).Error("Error talking to Ivona")
+      return
     }
 
     duration := time.Since(start)

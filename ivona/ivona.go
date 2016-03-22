@@ -10,19 +10,23 @@ type Ivona struct{
   Voice   *iv.Voice
 }
 
-func New(Access string, Secret string) *Ivona{
+func New(Access string, Secret string) (*Ivona, error){
   i := Ivona{}
 
   i.Client = iv.New(Access, Secret)
 
-  voices, _ := i.Client.ListVoices(iv.Voice{})
+  voices, err := i.Client.ListVoices(iv.Voice{})
+  if err != nil{
+    return &i, err
+  }
+
   for n,v := range voices.Voices{
     if v.Name == "Brian" && v.Language == "en-GB"{
       i.Voice = &voices.Voices[n]
     }
   }
 
-  return &i
+  return &i, nil
 }
 
 func (i *Ivona) GetSpeak(text string) ([]byte, error){
