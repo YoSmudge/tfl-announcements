@@ -31,8 +31,8 @@ func doStatus(a *tfl.Api) {
 func main() {
   log.SetLevel(log.DebugLevel)
 
-  a := tfl.Api{appId, apiKey}
-  doStatus(&a)
+  a := tfl.NewApi(appId, apiKey)
+  doStatus(a)
 
   /*
   statuses := tfl.StatusList{}
@@ -45,7 +45,7 @@ func main() {
   for {
     select{
       case <- statusTicker.C:
-        doStatus(&a)
+        doStatus(a)
       case <- statusEnd:
         statusTicker.Stop()
         return

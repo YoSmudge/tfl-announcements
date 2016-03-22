@@ -3,7 +3,7 @@ package tfl
 import(
   "fmt"
   log "github.com/Sirupsen/logrus"
-  "net/http"
+  "github.com/gregjones/httpcache"
   "encoding/json"
   "net/url"
   "io/ioutil"
@@ -14,8 +14,18 @@ import(
 var modeTypes = []string{"tube", "overground", "dlr", "tflrail"}
 
 type Api struct{
-  AppId   string
-  ApiKey  string
+  AppId       string
+  ApiKey      string
+  Transport   *httpcache.Transport
+}
+
+func NewApi(AppId string, ApiKey string) *Api{
+  a := Api{}
+  a.AppId = AppId
+  a.ApiKey = ApiKey
+  a.Transport = httpcache.NewMemoryCacheTransport()
+
+  return &a
 }
 
 func (a *Api) DoCall(call string, reciever interface{}) error{
@@ -29,22 +39,39 @@ func (a *Api) DoCall(call string, reciever interface{}) error{
   callPath.RawQuery = q.Encode()
 
   callStart := time.Now()
+  http := a.Transport.Client()
   rsp, err := http.Get(callPath.String())
-  if err != nil{
-    log.WithFields(log.Fields{
-      "Error": err,
-      "Status": rsp.StatusCode,
-      "Target": logUrl,
-    }).Error("Error calling TFL")
-    return err
+
+  reqDate, _ := httpcache.Date(rsp.Header)
+  var cacheAge time.Duration
+  var wasCached bool
+  if rsp.Header.Get("X-From-Cache") == "1"{
+    wasCached = true
+    cacheAge = time.Since(reqDate)
+  } else {
+    wasCached = false
+    cacheAge = time.Second*0
   }
 
   callDuration := time.Since(callStart)
-  log.WithFields(log.Fields{
-    "Target": logUrl,
+
+  logFields := log.Fields{
+    "Error": err,
     "Status": rsp.StatusCode,
+    "Target": logUrl,
     "Duration": callDuration,
-  }).Debug("Call to TFL")
+    "Cached": wasCached,
+    "CacheAge": cacheAge,
+  }
+
+  if err != nil{
+    log.WithFields(logFields).Error("Error calling TFL")
+    return err
+  }
+
+  if !wasCached{
+    log.WithFields(logFields).Debug("Call to TFL")
+  }
 
   defer rsp.Body.Close()
   responseRaw, _ := ioutil.ReadAll(rsp.Body)

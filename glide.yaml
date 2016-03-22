@@ -4,3 +4,4 @@ import:
 - package: github.com/hoisie/mustache
 - package: github.com/jteeuwen/go-bindata
 - package: gopkg.in/yaml.v2
+- package: github.com/gregjones/httpcache

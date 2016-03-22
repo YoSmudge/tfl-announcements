@@ -68,7 +68,9 @@ func (s *StatusList) HasDisruption() bool{
 func (s *StatusList) GoodServiceModes() []string{
   gsm := make(map[string]bool)
   for _, st := range s.Statuses{
-    gsm[st.Line.Mode] = true
+    if !st.Issues{
+      gsm[st.Line.Mode] = true
+    }
   }
 
   modes := []string{}

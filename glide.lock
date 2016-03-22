@@ -1,16 +1,14 @@
-hash: be1ef767f7341c3a4cb68329d9928c72b8d9a53a37c2e00b7ea1da30fca230fd
-updated: 2016-03-21T22:04:15.949558238Z
+hash: ffb82db4bae96f7b031bdd73850f5dc595581bf534419fed99b7a01face45e6e
+updated: 2016-03-22T13:25:04.5139575Z
 imports:
+- name: github.com/gregjones/httpcache
+  version: 4b02602f71f4346dfbd3ef8f4d15cc2a318b32c1
 - name: github.com/hoisie/mustache
   version: af524a16a1b1bd467c342969bf37db23433466c4
 - name: github.com/jteeuwen/go-bindata
   version: a0ff2567cfb70903282db057e799fd826784d41d
 - name: github.com/Sirupsen/logrus
   version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
-- name: golang.org/x/sys
-  version: 9d4e42a20653790449273b3c85e67d6d8bae6e2e
-  subpackages:
-  - unix
 - name: gopkg.in/yaml.v2
   version: a83829b6f1293c91addabc89d0571c246397bbf4
 devImports: []
