@@ -1,8 +1,5 @@
 package tfl
 
-import(
-)
-
 func FetchStatus(api *Api) (StatusUpdate, error){
   var statuses StatusList
   var lines LineList
