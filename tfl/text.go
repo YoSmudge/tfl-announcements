@@ -55,6 +55,8 @@ func (s *StatusUpdate) CoerceStatusUpdate(status Status) string{
     statusMsg = strings.TrimLeft(statusMsg[len(statusPrefix):len(statusMsg)], " ")
   }
 
+  statusMsg = strings.Split(statusMsg, ".")[0]
+
   return strings.TrimRight(statusMsg, "., ")
 }
 

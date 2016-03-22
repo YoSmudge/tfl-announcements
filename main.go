@@ -18,13 +18,8 @@ type options struct {
 
 const tflAppId = "7813aa7e"
 const tflApiKey = "fe928850b2f8a836ad1f6ffcf4768549"
-/*
 const ivonaKey = "GDNAIRN6TKHGQVKHI6CQ"
 const ivonaSecret = "jZnhDUwO5NuTj5THDjfYzR4KD99+fNuM+HBNIEoS"
-*/
-
-const ivonaKey = "GDNAJIQBGTQBTSD6HVRA"
-const ivonaSecret = "ARTRh5KD0GThid0W3YQCv8PPZ5vBur8QLXNfuWJU"
 
 func doStatus(a *tfl.Api, speak bool) {
   start := time.Now()
@@ -92,19 +87,19 @@ func main() {
   log.SetFormatter(&log.TextFormatter{FullTimestamp:true})
 
   a := tfl.NewApi(tflAppId, tflApiKey)
-  doStatus(a, parsedOptions.Speak)
+  go doStatus(a, parsedOptions.Speak)
 
   if parsedOptions.Once{
     return
   }
 
-  statusTicker := time.NewTicker(30 * time.Second)
+  statusTicker := time.NewTicker(10 * time.Minute)
   statusEnd := make(chan struct{})
 
   for {
     select{
       case <- statusTicker.C:
-        doStatus(a, parsedOptions.Speak)
+        go doStatus(a, parsedOptions.Speak)
       case <- statusEnd:
         statusTicker.Stop()
         return
