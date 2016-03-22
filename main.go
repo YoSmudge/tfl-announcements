@@ -2,6 +2,7 @@ package main
 
 import(
   "github.com/samarudge/homecontrol-tubestatus/fetcher"
+  "github.com/samarudge/homecontrol-tubestatus/afplay"
   log "github.com/Sirupsen/logrus"
   "github.com/voxelbrain/goptions"
   "github.com/tuxychandru/pubsub"
@@ -10,19 +11,16 @@ import(
 type options struct {
   Verbose   bool            `goptions:"-v, --verbose, description='Log verbosely'"`
   Once      bool            `goptions:"-o, --once, description='Run once then exit'"`
-  Speak     bool            `goptions:"-s, --speak, description='Speak the output'"`
+  Afplay    bool            `goptions:"--afplay, description='Play audio with OS/X afplay command'"`
   Help      goptions.Help   `goptions:"-h, --help, description='Show help'"`
 }
 
-func logOutput(c chan interface{}){
-  for us := range c{
-    u := us.(fetcher.StatusUpdate)
-    log.WithFields(log.Fields{
-      "full":u.IsFull,
-      "duration":u.Duration,
-      "created":u.Created,
-    }).Info(u.Text)
-  }
+func logOutput(u *fetcher.StatusUpdate){
+  log.WithFields(log.Fields{
+    "full":u.IsFull,
+    "duration":u.Duration,
+    "created":u.Created,
+  }).Info(u.Text)
 }
 
 func main() {
@@ -39,7 +37,11 @@ func main() {
   log.SetFormatter(&log.TextFormatter{FullTimestamp:true})
 
   messageFeed := pubsub.New(1)
-  go logOutput(messageFeed.Sub("updates"))
+  go fetcher.SubscribeHandler(messageFeed, logOutput)
+
+  if parsedOptions.Afplay{
+    go fetcher.SubscribeHandler(messageFeed, afplay.Afplay)
+  }
 
   fetcher.RunStatus(parsedOptions.Once, messageFeed)
 }

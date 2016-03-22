@@ -17,6 +17,14 @@ type StatusUpdate struct{
   Audio       []byte
 }
 
+func SubscribeHandler(feed *pubsub.PubSub, handler func(u *StatusUpdate)){
+  c := feed.Sub("updates")
+  for uc := range c{
+    u := uc.(*StatusUpdate)
+    handler(u)
+  }
+}
+
 func doStatus(a *tfl.Api, feed *pubsub.PubSub) {
   start := time.Now()
   statusUpdate, err := tfl.FetchStatus(a)
@@ -52,7 +60,7 @@ func doStatus(a *tfl.Api, feed *pubsub.PubSub) {
   u.Duration = duration
   u.Audio = audio
 
-  feed.Pub(u, "updates")
+  feed.Pub(&u, "updates")
 }
 
 func RunStatus(runOnce bool, feed *pubsub.PubSub){
