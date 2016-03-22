@@ -1,10 +1,16 @@
-hash: 0c416be45b6aa00edbbe02d14a0237ab6c191b67e914845f61dd4d7c9358213c
-updated: 2016-03-22T16:51:50.805725567Z
+hash: dfeef1ceb7f165684e6efb29fe8e28901c9d9b8f72bd1780788322b74663a500
+updated: 2016-03-22T17:30:40.243631727Z
 imports:
+- name: github.com/bmizerany/aws4
+  version: 5fb2e72396263668edd9a2956052e402cf6c104a
+- name: github.com/deepakjois/gomp3
+  version: d5e87c1b3ab81a0bb9f405b82328f334b3f06865
 - name: github.com/gregjones/httpcache
   version: 4b02602f71f4346dfbd3ef8f4d15cc2a318b32c1
 - name: github.com/hoisie/mustache
   version: af524a16a1b1bd467c342969bf37db23433466c4
+- name: github.com/jpadilla/ivona-go
+  version: 4018c8ab5e21e2ae2999322c284c51842fcdc366
 - name: github.com/jteeuwen/go-bindata
   version: a0ff2567cfb70903282db057e799fd826784d41d
 - name: github.com/Sirupsen/logrus

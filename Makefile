@@ -15,6 +15,10 @@ run: all
 test: all
 	./homecontrol-tubestatus --verbose --once
 
+test-speak: all
+	./homecontrol-tubestatus --verbose --once --speak
+	afplay ./test.mp3
+
 clean:
 	rm -f language/strings.go
 	rm -f homecontrol-tubestatus

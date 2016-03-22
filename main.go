@@ -3,6 +3,7 @@ package main
 import(
   "time"
   "github.com/samarudge/homecontrol-tubestatus/tfl"
+  "github.com/samarudge/homecontrol-tubestatus/ivona"
   log "github.com/Sirupsen/logrus"
   "github.com/voxelbrain/goptions"
 )
@@ -11,13 +12,21 @@ import(
 type options struct {
   Verbose   bool            `goptions:"-v, --verbose, description='Log verbosely'"`
   Once      bool            `goptions:"-o, --once, description='Run once then exit'"`
+  Speak     bool            `goptions:"-s, --speak, description='Speak the output'"`
   Help      goptions.Help   `goptions:"-h, --help, description='Show help'"`
 }
 
 const tflAppId = "7813aa7e"
 const tflApiKey = "fe928850b2f8a836ad1f6ffcf4768549"
+/*
+const ivonaKey = "GDNAIRN6TKHGQVKHI6CQ"
+const ivonaSecret = "jZnhDUwO5NuTj5THDjfYzR4KD99+fNuM+HBNIEoS"
+*/
 
-func doStatus(a *tfl.Api) {
+const ivonaKey = "GDNAJIQBGTQBTSD6HVRA"
+const ivonaSecret = "ARTRh5KD0GThid0W3YQCv8PPZ5vBur8QLXNfuWJU"
+
+func doStatus(a *tfl.Api, speak bool) {
   start := time.Now()
   statusUpdate, err := tfl.FetchStatus(a)
   if err != nil{
@@ -27,7 +36,7 @@ func doStatus(a *tfl.Api) {
     return
   }
 
-  statusTextShort, err := statusUpdate.Generate(true)
+  statusTextShort, err := statusUpdate.Generate(false)
 
   if err != nil{
     log.WithFields(log.Fields{
@@ -36,7 +45,7 @@ func doStatus(a *tfl.Api) {
     return
   }
 
-  statusTextFull, err := statusUpdate.Generate(false)
+  statusTextFull, err := statusUpdate.Generate(true)
 
   if err != nil{
     log.WithFields(log.Fields{
@@ -56,6 +65,17 @@ func doStatus(a *tfl.Api) {
     "duration": duration,
     "type": "full",
   }).Info(statusTextFull)
+
+  if speak{
+    i := ivona.New(ivonaKey, ivonaSecret)
+    err := i.Speak(statusTextFull)
+
+    if err != nil{
+      log.WithFields(log.Fields{
+        "error": err,
+      }).Warning("Error speaking text")
+    }
+  }
 }
 
 func main() {
@@ -72,7 +92,7 @@ func main() {
   log.SetFormatter(&log.TextFormatter{FullTimestamp:true})
 
   a := tfl.NewApi(tflAppId, tflApiKey)
-  doStatus(a)
+  doStatus(a, parsedOptions.Speak)
 
   if parsedOptions.Once{
     return
@@ -84,7 +104,7 @@ func main() {
   for {
     select{
       case <- statusTicker.C:
-        doStatus(a)
+        doStatus(a, parsedOptions.Speak)
       case <- statusEnd:
         statusTicker.Stop()
         return

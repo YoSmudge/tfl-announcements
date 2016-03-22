@@ -6,3 +6,5 @@ import:
 - package: gopkg.in/yaml.v2
 - package: github.com/gregjones/httpcache
 - package: github.com/voxelbrain/goptions
+- package: github.com/jpadilla/ivona-go
+- package: github.com/deepakjois/gomp3
