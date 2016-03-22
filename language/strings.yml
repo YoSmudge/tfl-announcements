@@ -1,0 +1,4 @@
+prefix: "TFL Service Update:"
+all_good: "Good service on all lines."
+other_good: "Good service on all other {{good_modes}} services."
+entire_line: "on the entire line."

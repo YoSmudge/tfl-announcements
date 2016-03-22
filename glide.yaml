@@ -1,0 +1,6 @@
+package: github.com/samarudge/homecontrol-tubestatus
+import:
+- package: github.com/Sirupsen/logrus
+- package: github.com/hoisie/mustache
+- package: github.com/jteeuwen/go-bindata
+- package: gopkg.in/yaml.v2
