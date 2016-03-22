@@ -5,6 +5,7 @@ import(
   "github.com/samarudge/homecontrol-tubestatus/ivona"
   "github.com/samarudge/homecontrol-tubestatus/config"
   "time"
+  "math"
   log "github.com/Sirupsen/logrus"
   "github.com/tuxychandru/pubsub"
 )
@@ -63,25 +64,48 @@ func doStatus(a *tfl.Api, feed *pubsub.PubSub) {
   feed.Pub(&u, "updates")
 }
 
+type nextRun struct{
+  Time    time.Time
+  IsFull  bool
+}
+
+func NextPeriod(period time.Duration) time.Time{
+  unixStamp := float64(time.Now().Unix())
+  secondsPerPeriod := period.Seconds()
+
+  basePeriods := math.Floor(unixStamp/secondsPerPeriod)
+
+  return time.Unix(int64(secondsPerPeriod*(basePeriods+1)), 0)
+}
+
+func NextRun() nextRun{
+  p := nextRun{}
+  p.Time = NextPeriod(config.Config.UpdatePeriod.Short)
+
+  if p.Time == NextPeriod(config.Config.UpdatePeriod.Full){
+    p.IsFull = true
+  }
+
+  return p
+}
+
 func RunStatus(runOnce bool, feed *pubsub.PubSub){
   a := tfl.NewApi(config.Config.Tfl.AppId, config.Config.Tfl.AppKey)
 
-  doStatus(a, feed)
-
-  if runOnce{
-    return
-  }
-
-  statusTicker := time.NewTicker(10 * time.Minute)
-  statusEnd := make(chan struct{})
-
   for {
-    select{
-      case <- statusTicker.C:
-        doStatus(a, feed)
-      case <- statusEnd:
-        statusTicker.Stop()
-        return
+    np := NextRun()
+    doStatus(a, feed)
+
+    if runOnce{
+      return
     }
+
+    waitTime := time.Since(np.Time)*-1
+    log.WithFields(log.Fields{
+      "nextRun": np.Time,
+      "wait": waitTime,
+      "full": np.IsFull,
+    }).Debug("Awaiting next run")
+    <- time.After(waitTime)
   }
 }
