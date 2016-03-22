@@ -9,6 +9,7 @@ import(
   "io/ioutil"
   "strings"
   "time"
+  "math/rand"
 )
 
 var modeTypes = []string{"tube", "overground", "dlr", "tflrail"}
@@ -131,6 +132,9 @@ type asyncLineStatus struct{
 }
 
 func (a *Api) AsyncGetLineStatus(line Line, response chan asyncLineStatus){
+  amt := time.Duration(rand.Intn(1000))
+  time.Sleep(time.Millisecond * amt)
+
   st, err := a.GetLineStatus(line)
   response <- asyncLineStatus{st,err}
 }
