@@ -3,6 +3,7 @@ package tfl
 import(
   "fmt"
   "strings"
+  "sort"
   "github.com/samarudge/homecontrol-tubestatus/language"
 )
 
@@ -81,6 +82,8 @@ func (s *StatusUpdate) Generate(fullUpdate bool) (string, error){
     for _,mode := range s.Statuses.GoodServiceModes(){
       goodServiceModes = append(goodServiceModes, language.GetString("modes", mode))
     }
+
+    sort.Strings(goodServiceModes)
 
     statusDetails = statusDetails.Add(language.RenderString("strings", "other_good", language.H{
       "good_modes": makeList(goodServiceModes),
