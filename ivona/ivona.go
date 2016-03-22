@@ -3,7 +3,6 @@ package ivona
 import(
   iv "github.com/jpadilla/ivona-go"
   log "github.com/Sirupsen/logrus"
-  "io/ioutil"
 )
 
 type Ivona struct{
@@ -26,7 +25,7 @@ func New(Access string, Secret string) *Ivona{
   return &i
 }
 
-func (i *Ivona) Speak(text string) error{
+func (i *Ivona) GetSpeak(text string) ([]byte, error){
   o := iv.NewSpeechOptions(text)
   o.Voice = i.Voice
 
@@ -36,9 +35,8 @@ func (i *Ivona) Speak(text string) error{
       "error": err,
       "text": text,
     }).Error("Error talking to Ivona Cloud")
-    return err
+    return []byte{}, err
   }
 
-  err = ioutil.WriteFile("./test.mp3", r.Audio, 0644)
-  return nil
+  return r.Audio, nil
 }

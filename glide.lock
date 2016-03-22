@@ -1,5 +1,5 @@
-hash: dfeef1ceb7f165684e6efb29fe8e28901c9d9b8f72bd1780788322b74663a500
-updated: 2016-03-22T17:30:40.243631727Z
+hash: 24fa5cda6e377a42775a350691f2b40634dda27e101b50cf9a9953462f86d61f
+updated: 2016-03-22T21:40:30.681161865Z
 imports:
 - name: github.com/bmizerany/aws4
   version: 5fb2e72396263668edd9a2956052e402cf6c104a
@@ -15,8 +15,14 @@ imports:
   version: a0ff2567cfb70903282db057e799fd826784d41d
 - name: github.com/Sirupsen/logrus
   version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
+- name: github.com/tuxychandru/pubsub
+  version: 9a40b5ef119cc81d1ca384b2726c4d58be07ddee
 - name: github.com/voxelbrain/goptions
   version: 26cb8b04692384f4dc269de3b5fcf3e2ef78573e
+- name: golang.org/x/sys
+  version: 9d4e42a20653790449273b3c85e67d6d8bae6e2e
+  subpackages:
+  - unix
 - name: gopkg.in/yaml.v2
   version: a83829b6f1293c91addabc89d0571c246397bbf4
 devImports: []

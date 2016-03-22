@@ -10,14 +10,10 @@ language/strings.go: $(LANGUAGE)
 	${GOPATH}/bin/go-bindata -o language/strings.go -pkg language -ignore language/*.go language/*.yml
 
 run: all
-	./homecontrol-tubestatus
+	./homecontrol-tubestatus --verbose
 
 test: all
 	./homecontrol-tubestatus --verbose --once
-
-test-speak: all
-	./homecontrol-tubestatus --verbose --once --speak
-	afplay ./test.mp3
 
 clean:
 	rm -f language/strings.go

@@ -8,3 +8,4 @@ import:
 - package: github.com/voxelbrain/goptions
 - package: github.com/jpadilla/ivona-go
 - package: github.com/deepakjois/gomp3
+- package: github.com/tuxychandru/pubsub
