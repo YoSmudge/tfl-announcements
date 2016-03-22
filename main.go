@@ -11,7 +11,7 @@ const apiKey = "fe928850b2f8a836ad1f6ffcf4768549"
 
 func doStatus(a *tfl.Api) {
   start := time.Now()
-  statuses, err := tfl.FetchStatus(a)
+  statusUpdate, err := tfl.FetchStatus(a)
   if err != nil{
     log.WithFields(log.Fields{
       "error": err,
@@ -19,9 +19,15 @@ func doStatus(a *tfl.Api) {
     return
   }
 
-  statusUpdate := tfl.StatusUpdate{statuses}
-  statusText := statusUpdate.Generate()
+  statusText, err := statusUpdate.Generate()
   duration := time.Since(start)
+
+  if err != nil{
+    log.WithFields(log.Fields{
+      "error": err,
+    }).Error("Error encountered generating status text")
+    return
+  }
 
   log.WithFields(log.Fields{
     "duration": duration,

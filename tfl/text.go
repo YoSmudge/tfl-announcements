@@ -1,25 +1,33 @@
 package tfl
 
 import(
-  "fmt"
   "strings"
   "github.com/samarudge/homecontrol-tubestatus/language"
 )
 
 type StatusUpdate struct{
+  Api       *Api
   Statuses  StatusList
 }
 
 type statusText []string
 
-func (s *StatusUpdate) Generate() string{
+func (s *StatusUpdate) Generate() (string, error){
   var statusDetails statusText
 
   statusDetails = statusDetails.Add(language.GetString("strings", "prefix"))
 
   if s.Statuses.HasDisruption(){
     for _,status := range s.Statuses.DisruptedLines(){
-      lineDetails := fmt.Sprintf("The %s Line has %f", status.Line.Name, status.StatusLevel)
+      statusDescription, err := s.Api.GetSeverityFromCode(status.Line.Mode, status.StatusLevel)
+      if err != nil{
+        return "", err
+      }
+
+      lineDetails := language.RenderString("strings", "line_status", language.H{
+        "line_name": status.Line.Name,
+        "line_status": statusDescription,
+      })
 
       statusDetails = statusDetails.Add(lineDetails)
     }
@@ -29,13 +37,14 @@ func (s *StatusUpdate) Generate() string{
       goodServiceModes = append(goodServiceModes, language.GetString("modes", mode))
     }
 
-    statusDetails = statusDetails.Add(language.GetString("strings", "other_good"))
-    statusDetails = statusDetails.Add(makeList(goodServiceModes))
+    statusDetails = statusDetails.Add(language.RenderString("strings", "other_good", language.H{
+      "good_modes": makeList(goodServiceModes),
+    }))
   } else {
     statusDetails = statusDetails.Add(language.GetString("strings", "all_good"))
   }
 
-  return statusDetails.Format()
+  return statusDetails.Format(), nil
 }
 
 func (t statusText) Add(msg string) statusText{
@@ -58,7 +67,7 @@ func makeList(l []string) string{
 
     outputs = append(outputs, word)
 
-    if i < wordsLen{
+    if i < wordsLen-1{
       outputs = append(outputs, ", ")
     }
   }

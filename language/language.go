@@ -3,7 +3,10 @@ package language
 import(
   "fmt"
   "gopkg.in/yaml.v2"
+  "github.com/hoisie/mustache"
 )
+
+type H map[string]interface{}
 
 func GetString(stringGroup string, stringName string) string{
   sf, err := Asset(fmt.Sprintf("language/%s.yml", stringGroup))
@@ -23,4 +26,9 @@ func GetString(stringGroup string, stringName string) string{
   }
 
   return pickedString
+}
+
+func RenderString(stringGroup string, stringName string, ctx interface{}) string{
+  baseTemplate := GetString(stringGroup, stringName)
+  return mustache.Render(baseTemplate, ctx)
 }

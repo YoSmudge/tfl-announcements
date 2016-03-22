@@ -152,3 +152,25 @@ func (a *Api) GetLineStatuses(lines LineList) (StatusList, error){
 
   return statusList, nil
 }
+
+type severityCode struct{
+  Mode            string    `json:"modeName"`
+  SeverityLevel   float64
+  Description     string
+}
+
+func (a *Api) GetSeverityFromCode(mode string, severityLevel float64) (string, error){
+  codes := []severityCode{}
+  err := a.DoCall("/Line/Meta/Severity", &codes)
+  if err != nil{
+    return "", err
+  }
+
+  for _,code := range codes{
+    if code.Mode == mode && code.SeverityLevel == severityLevel{
+      return code.Description, nil
+    }
+  }
+
+  panic(fmt.Sprintf("Was asked for code %f for mode %s but does not exist!", severityLevel, mode))
+}
