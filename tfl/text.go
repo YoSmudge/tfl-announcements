@@ -1,6 +1,7 @@
 package tfl
 
 import(
+  "fmt"
   "strings"
   "github.com/samarudge/homecontrol-tubestatus/language"
 )
@@ -16,6 +17,7 @@ func (s *StatusUpdate) Generate() (string, error){
   var statusDetails statusText
 
   statusDetails = statusDetails.Add(language.GetString("strings", "prefix"))
+  lineModes := language.LineModes()
 
   if s.Statuses.HasDisruption(){
     for _,status := range s.Statuses.DisruptedLines(){
@@ -24,8 +26,13 @@ func (s *StatusUpdate) Generate() (string, error){
         return "", err
       }
 
+      lineName := status.Line.Name
+      if lineModes[status.Line.Mode]{
+        lineName = fmt.Sprintf("%s Line", status.Line.Name)
+      }
+
       lineDetails := language.RenderString("strings", "line_status", language.H{
-        "line_name": status.Line.Name,
+        "line_name": lineName,
         "line_status": statusDescription,
       })
 
