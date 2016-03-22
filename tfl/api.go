@@ -116,7 +116,6 @@ func (a *Api) GetLineStatus(line Line) (Status, error){
 
   log.WithFields(log.Fields{
     "issues": status.Issues,
-    "status": status.StatusLevel,
     "line": line.Id,
   }).Debug("Got line status")
 

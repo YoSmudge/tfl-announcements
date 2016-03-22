@@ -13,30 +13,68 @@ type StatusUpdate struct{
 
 type statusText []string
 
-func (s *StatusUpdate) Generate() (string, error){
+func LineName(line Line) string{
+  lineModes := language.LineModes()
+  lineName := line.Name
+  if lineModes[line.Mode]{
+    lineName = fmt.Sprintf("%s Line", line.Name)
+  }
+
+  return lineName
+}
+
+func (s *StatusUpdate) CoerceStatusUpdate(status Status) string{
+  statusMsg := status.StatusDetails
+  linePrefix := strings.ToLower(fmt.Sprintf("%s:", LineName(status.Line)))
+
+  if strings.HasPrefix(strings.ToLower(statusMsg), linePrefix){
+    statusMsg = strings.TrimLeft(statusMsg[len(linePrefix):len(statusMsg)], " ")
+  }
+
+  statusDesc, _ := s.Api.GetSeverityFromCode(status.Line.Mode, status.LineStatus)
+  statusPrefix := strings.ToLower(statusDesc)
+  if strings.HasPrefix(strings.ToLower(statusMsg), statusPrefix){
+    statusMsg = strings.TrimLeft(statusMsg[len(statusPrefix):len(statusMsg)], " ")
+  }
+
+  dtPrefix := strings.ToLower("due to")
+  if strings.HasPrefix(strings.ToLower(statusMsg), dtPrefix){
+    statusMsg = strings.TrimLeft(statusMsg[len(dtPrefix):len(statusMsg)], " ")
+  }
+
+  return strings.TrimRight(statusMsg, "., ")
+}
+
+func (s *StatusUpdate) Generate(fullUpdate bool) (string, error){
   var statusDetails statusText
 
   statusDetails = statusDetails.Add(language.GetString("strings", "prefix"))
-  lineModes := language.LineModes()
 
   if s.Statuses.HasDisruption(){
     for _,status := range s.Statuses.DisruptedLines(){
-      statusDescription, err := s.Api.GetSeverityFromCode(status.Line.Mode, status.StatusLevel)
+      statusDescription, err := s.Api.GetSeverityFromCode(status.Line.Mode, status.LineStatus)
       if err != nil{
         return "", err
       }
 
-      lineName := status.Line.Name
-      if lineModes[status.Line.Mode]{
-        lineName = fmt.Sprintf("%s Line", status.Line.Name)
+      var additionalDetails string
+      if status.WholeLine{
+        additionalDetails = language.GetString("strings", "entire_line")
       }
 
       lineDetails := language.RenderString("strings", "line_status", language.H{
-        "line_name": lineName,
+        "line_name": LineName(status.Line),
         "line_status": statusDescription,
+        "additional_details": additionalDetails,
       })
 
       statusDetails = statusDetails.Add(lineDetails)
+
+      if fullUpdate{
+        statusDetails = statusDetails.Add(language.RenderString("strings", "due_to", language.H{
+          "reason": s.CoerceStatusUpdate(status),
+        }))
+      }
     }
 
     goodServiceModes := []string{}

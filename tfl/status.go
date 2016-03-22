@@ -11,38 +11,47 @@ type StatusList struct{
 type Status struct{
   Line          Line
   Issues        bool
-  StatusLevel   float64
-}
-
-func (s *Status) Text() string{
-  return "Moo"
+  WholeLine     bool
+  LineStatus    float64
+  StatusDetails string
 }
 
 func ParseStatusStruct(status *Status, statusStruct interface{}){
   statusResponses := statusStruct.([]interface{})
-  statusArrays := statusResponses[0].(map[string]interface{})["lineStatuses"].([]interface{})
-  var worstStatus float64 = 15
 
-  for _,stIn := range statusArrays{
-    statusLevel := stIn.(map[string]interface{})["statusSeverity"].(float64)
-    validNow := false
+  for _,sr := range statusResponses{
+    statusArrays := sr.(map[string]interface{})["lineStatuses"].([]interface{})
 
-    validityArray := stIn.(map[string]interface{})["validityPeriods"].([]interface{})
-    for _,vp := range validityArray{
-      validity := vp.(map[string]interface{})
-      isNow := validity["isNow"].(bool)
-      if isNow{
-        validNow = true
+    for _,stIn := range statusArrays{
+      statusLevel := stIn.(map[string]interface{})["statusSeverity"].(float64)
+      validNow := false
+
+      validityArray := stIn.(map[string]interface{})["validityPeriods"].([]interface{})
+      for _,vp := range validityArray{
+        validity := vp.(map[string]interface{})
+        isNow := validity["isNow"].(bool)
+        if isNow{
+          validNow = true
+        }
+      }
+
+      if statusLevel < status.LineStatus && validNow {
+        status.Issues = true
+      }
+
+      disruptionDetails := stIn.(map[string]interface{})["disruption"]
+
+      if disruptionDetails != nil {
+        wholeLine := disruptionDetails.(map[string]interface{})["isWholeLine"]
+        if wholeLine != nil && wholeLine.(bool) == true{
+          status.Issues = true
+          status.LineStatus = statusLevel
+          status.WholeLine = true
+          status.StatusDetails = stIn.(map[string]interface{})["reason"].(string)
+        }
       }
     }
-
-    if statusLevel < worstStatus && validNow {
-      worstStatus = statusLevel
-      status.Issues = true
-    }
   }
-
-  status.StatusLevel = worstStatus
 }
 
 func (s *StatusList) DisruptedLines() []Status{

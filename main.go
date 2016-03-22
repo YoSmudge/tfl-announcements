@@ -19,19 +19,35 @@ func doStatus(a *tfl.Api) {
     return
   }
 
-  statusText, err := statusUpdate.Generate()
-  duration := time.Since(start)
+  statusTextShort, err := statusUpdate.Generate(true)
 
   if err != nil{
     log.WithFields(log.Fields{
       "error": err,
-    }).Error("Error encountered generating status text")
+    }).Error("Error encountered generating short status text")
     return
   }
 
+  statusTextFull, err := statusUpdate.Generate(false)
+
+  if err != nil{
+    log.WithFields(log.Fields{
+      "error": err,
+    }).Error("Error encountered generating full status text")
+    return
+  }
+
+  duration := time.Since(start)
+
   log.WithFields(log.Fields{
     "duration": duration,
-  }).Info(statusText)
+    "type": "short",
+  }).Info(statusTextShort)
+
+  log.WithFields(log.Fields{
+    "duration": duration,
+    "type": "full",
+  }).Info(statusTextFull)
 }
 
 func main() {
