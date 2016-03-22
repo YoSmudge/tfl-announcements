@@ -8,6 +8,7 @@ import(
   "net/url"
   "io/ioutil"
   "strings"
+  "time"
 )
 
 var modeTypes = []string{"tube", "overground", "dlr", "tflrail"}
@@ -27,6 +28,7 @@ func (a *Api) DoCall(call string, reciever interface{}) error{
   q.Set("app_key", a.ApiKey)
   callPath.RawQuery = q.Encode()
 
+  callStart := time.Now()
   rsp, err := http.Get(callPath.String())
   if err != nil{
     log.WithFields(log.Fields{
@@ -37,9 +39,11 @@ func (a *Api) DoCall(call string, reciever interface{}) error{
     return err
   }
 
+  callDuration := time.Since(callStart)
   log.WithFields(log.Fields{
     "Target": logUrl,
     "Status": rsp.StatusCode,
+    "Duration": callDuration,
   }).Debug("Call to TFL")
 
   defer rsp.Body.Close()
