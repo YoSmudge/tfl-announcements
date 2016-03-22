@@ -58,16 +58,18 @@ func (s *StatusUpdate) Generate(fullUpdate bool) (string, error){
         return "", err
       }
 
-      var additionalDetails string
+      var lineDetails string
       if status.WholeLine{
-        additionalDetails = language.GetString("strings", "entire_line")
+        lineDetails = language.RenderString("strings", "entire_line", language.H{
+          "line_name": LineName(status.Line),
+          "line_status": statusDescription,
+        })
+      } else {
+        lineDetails = language.RenderString("strings", "line_status", language.H{
+          "line_name": LineName(status.Line),
+          "line_status": statusDescription,
+        })
       }
-
-      lineDetails := language.RenderString("strings", "line_status", language.H{
-        "line_name": LineName(status.Line),
-        "line_status": statusDescription,
-        "additional_details": additionalDetails,
-      })
 
       statusDetails = statusDetails.Add(lineDetails)
 
@@ -78,16 +80,20 @@ func (s *StatusUpdate) Generate(fullUpdate bool) (string, error){
       }
     }
 
-    goodServiceModes := []string{}
-    for _,mode := range s.Statuses.GoodServiceModes(){
-      goodServiceModes = append(goodServiceModes, language.GetString("modes", mode))
+    if fullUpdate{
+      goodServiceModes := []string{}
+      for _,mode := range s.Statuses.GoodServiceModes(){
+        goodServiceModes = append(goodServiceModes, language.GetString("modes", mode))
+      }
+
+      sort.Strings(goodServiceModes)
+
+      statusDetails = statusDetails.Add(language.RenderString("strings", "other_good", language.H{
+        "good_modes": makeList(goodServiceModes),
+      }))
+    } else {
+      statusDetails = statusDetails.Add(language.GetString("strings", "other_good_short"))
     }
-
-    sort.Strings(goodServiceModes)
-
-    statusDetails = statusDetails.Add(language.RenderString("strings", "other_good", language.H{
-      "good_modes": makeList(goodServiceModes),
-    }))
   } else {
     statusDetails = statusDetails.Add(language.GetString("strings", "all_good"))
   }
