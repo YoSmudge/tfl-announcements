@@ -3,12 +3,14 @@ package main
 import(
   "github.com/samarudge/tfl-announcements/fetcher"
   "github.com/samarudge/tfl-announcements/afplay"
+  "github.com/samarudge/tfl-announcements/config"
   log "github.com/Sirupsen/logrus"
   "github.com/voxelbrain/goptions"
   "github.com/tuxychandru/pubsub"
 )
 
 type options struct {
+  Config    string          `goptions:"-c, --config, description='Config Yaml file to use'"`
   Verbose   bool            `goptions:"-v, --verbose, description='Log verbosely'"`
   Once      bool            `goptions:"-o, --once, description='Run once then exit'"`
   Afplay    bool            `goptions:"--afplay, description='Play audio with OS/X afplay command'"`
@@ -25,6 +27,7 @@ func logOutput(u *fetcher.StatusUpdate){
 
 func main() {
   parsedOptions := options{}
+  parsedOptions.Config = "./config.yml"
 
   goptions.ParseAndFail(&parsedOptions)
 
@@ -35,6 +38,8 @@ func main() {
   }
 
   log.SetFormatter(&log.TextFormatter{FullTimestamp:true})
+
+  config.Load(parsedOptions.Config)
 
   messageFeed := pubsub.New(1)
   go fetcher.SubscribeHandler(messageFeed, logOutput)

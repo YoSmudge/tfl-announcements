@@ -1,0 +1,9 @@
+tfl:
+  app_id: ""
+  app_key: ""
+ivona:
+  key: ""
+  secret: ""
+update_period:
+  short: "10m"
+  full: "1h"

@@ -3,3 +3,5 @@
 /mock-responses/
 /vendor/
 /test.mp3
+/config.yml
+/config-old.yml
