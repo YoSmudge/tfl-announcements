@@ -1,5 +1,5 @@
 prefix: "TFL Service Update:"
-all_good: "Good service on all lines."
+all_good: "There is currently a good service on all {{good_modes}} services."
 other_good: "Good service on all other {{good_modes}} services."
 other_good_short: "Good service on other lines."
 entire_line: "There are {{line_status}} on the {{{line_name}}}."

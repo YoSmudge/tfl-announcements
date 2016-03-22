@@ -63,7 +63,12 @@ func (s *StatusUpdate) CoerceStatusUpdate(status Status) string{
 func (s *StatusUpdate) Generate(fullUpdate bool) (string, error){
   var statusDetails statusText
 
-  statusDetails = statusDetails.Add(language.GetString("strings", "prefix"))
+  goodServiceModes := []string{}
+  for _,mode := range s.Statuses.GoodServiceModes(){
+    goodServiceModes = append(goodServiceModes, language.GetString("modes", mode))
+  }
+
+  sort.Strings(goodServiceModes)
 
   if s.Statuses.HasDisruption(){
     for _,status := range s.Statuses.DisruptedLines(){
@@ -95,13 +100,6 @@ func (s *StatusUpdate) Generate(fullUpdate bool) (string, error){
     }
 
     if fullUpdate{
-      goodServiceModes := []string{}
-      for _,mode := range s.Statuses.GoodServiceModes(){
-        goodServiceModes = append(goodServiceModes, language.GetString("modes", mode))
-      }
-
-      sort.Strings(goodServiceModes)
-
       statusDetails = statusDetails.Add(language.RenderString("strings", "other_good", language.H{
         "good_modes": makeList(goodServiceModes),
       }))
@@ -109,10 +107,19 @@ func (s *StatusUpdate) Generate(fullUpdate bool) (string, error){
       statusDetails = statusDetails.Add(language.GetString("strings", "other_good_short"))
     }
   } else {
-    statusDetails = statusDetails.Add(language.GetString("strings", "all_good"))
+    if fullUpdate{
+      statusDetails = statusDetails.Add(language.RenderString("strings", "all_good", language.H{
+        "good_modes": makeList(goodServiceModes),
+      }))
+    }
   }
 
-  return statusDetails.Format(), nil
+  if len(statusDetails) > 0{
+    statusDetails = append([]string{language.GetString("strings", "prefix")}, statusDetails...)
+    return statusDetails.Format(), nil
+  } else {
+    return "", nil
+  }
 }
 
 func (t statusText) Add(msg string) statusText{
