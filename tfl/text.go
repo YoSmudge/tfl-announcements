@@ -14,33 +14,45 @@ type StatusUpdate struct{
 
 type statusText []string
 
-func LineName(line Line) string{
+func LineName(lineName string, mode string) string{
   lineModes := language.LineModes()
-  lineName := line.Name
-  if lineModes[line.Mode]{
-    lineName = fmt.Sprintf("%s Line", line.Name)
+  if lineModes[mode]{
+    lineName = fmt.Sprintf("%s Line", lineName)
   }
 
   return lineName
 }
 
+func LineAliases(line Line) []string{
+  aliases := []string{line.Name}
+
+  ca := language.GetRawParam("config")["line_aliases"].(map[interface{}]interface{})[line.Id]
+
+  if ca != nil{
+    for _,alias := range(ca.([]interface{})){
+      aliases = append(aliases, alias.(string))
+    }
+  }
+
+  return aliases
+}
+
 func (s *StatusUpdate) CoerceStatusUpdate(status Status) string{
   statusMsg := status.StatusDetails
-  linePrefix := strings.ToLower(fmt.Sprintf("%s:", LineName(status.Line)))
+  lineAliases := LineAliases(status.Line)
 
-  if strings.HasPrefix(strings.ToLower(statusMsg), linePrefix){
-    statusMsg = strings.TrimLeft(statusMsg[len(linePrefix):len(statusMsg)], " ")
+  for _,alias := range lineAliases{
+    linePrefix := strings.ToLower(fmt.Sprintf("%s:", LineName(alias, status.Line.Mode)))
+
+    if strings.HasPrefix(strings.ToLower(statusMsg), linePrefix){
+      statusMsg = strings.TrimLeft(statusMsg[len(linePrefix):len(statusMsg)], " ")
+    }
   }
 
   statusDesc, _ := s.Api.GetSeverityFromCode(status.Line.Mode, status.LineStatus)
   statusPrefix := strings.ToLower(statusDesc)
   if strings.HasPrefix(strings.ToLower(statusMsg), statusPrefix){
     statusMsg = strings.TrimLeft(statusMsg[len(statusPrefix):len(statusMsg)], " ")
-  }
-
-  dtPrefix := strings.ToLower("due to")
-  if strings.HasPrefix(strings.ToLower(statusMsg), dtPrefix){
-    statusMsg = strings.TrimLeft(statusMsg[len(dtPrefix):len(statusMsg)], " ")
   }
 
   return strings.TrimRight(statusMsg, "., ")
@@ -61,12 +73,12 @@ func (s *StatusUpdate) Generate(fullUpdate bool) (string, error){
       var lineDetails string
       if status.WholeLine{
         lineDetails = language.RenderString("strings", "entire_line", language.H{
-          "line_name": LineName(status.Line),
+          "line_name": LineName(status.Line.Name, status.Line.Mode),
           "line_status": statusDescription,
         })
       } else {
         lineDetails = language.RenderString("strings", "line_status", language.H{
-          "line_name": LineName(status.Line),
+          "line_name": LineName(status.Line.Name, status.Line.Mode),
           "line_status": statusDescription,
         })
       }

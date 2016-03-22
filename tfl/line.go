@@ -2,6 +2,7 @@ package tfl
 
 import(
   "strings"
+  "html"
 )
 
 type LineList struct{
@@ -26,4 +27,10 @@ func (l *LineList) List() string{
   }
 
   return strings.Join(lineIds, ",")
+}
+
+func (l *LineList) FixNames(){
+  for _,line := range l.lines{
+    line.Name = html.UnescapeString(line.Name)
+  }
 }

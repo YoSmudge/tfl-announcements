@@ -1,7 +1,7 @@
 package tfl
 
 import(
-  //"fmt"
+  "html"
 )
 
 type StatusList struct{
@@ -47,7 +47,7 @@ func ParseStatusStruct(status *Status, statusStruct interface{}){
           status.Issues = true
           status.LineStatus = statusLevel
           status.WholeLine = true
-          status.StatusDetails = stIn.(map[string]interface{})["reason"].(string)
+          status.StatusDetails = html.UnescapeString(stIn.(map[string]interface{})["reason"].(string))
         }
       }
     }

@@ -95,6 +95,9 @@ func (a *Api) GetLines(lineModes []string) (LineList, error){
   if err != nil{
     return lines, err
   }
+
+  lines.FixNames()
+
   log.WithFields(log.Fields{
     "lineCount": lines.Count(),
     "lineList": lines.List(),
