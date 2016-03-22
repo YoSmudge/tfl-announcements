@@ -1,5 +1,5 @@
-hash: ffb82db4bae96f7b031bdd73850f5dc595581bf534419fed99b7a01face45e6e
-updated: 2016-03-22T13:25:04.5139575Z
+hash: 0c416be45b6aa00edbbe02d14a0237ab6c191b67e914845f61dd4d7c9358213c
+updated: 2016-03-22T16:51:50.805725567Z
 imports:
 - name: github.com/gregjones/httpcache
   version: 4b02602f71f4346dfbd3ef8f4d15cc2a318b32c1
@@ -9,6 +9,8 @@ imports:
   version: a0ff2567cfb70903282db057e799fd826784d41d
 - name: github.com/Sirupsen/logrus
   version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
+- name: github.com/voxelbrain/goptions
+  version: 26cb8b04692384f4dc269de3b5fcf3e2ef78573e
 - name: gopkg.in/yaml.v2
   version: a83829b6f1293c91addabc89d0571c246397bbf4
 devImports: []
