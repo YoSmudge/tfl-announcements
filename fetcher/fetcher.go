@@ -43,7 +43,7 @@ func doStatus(a *tfl.Api, feed *pubsub.PubSub) {
     return
   }
 
-  i := ivona.New(config.IvonaKey, config.IvonaSecret)
+  i := ivona.New(config.Config.Ivona.Key, config.Config.Ivona.Secret)
   audio, err := i.GetSpeak(statusText)
   if err != nil{
     log.WithFields(log.Fields{
@@ -64,7 +64,7 @@ func doStatus(a *tfl.Api, feed *pubsub.PubSub) {
 }
 
 func RunStatus(runOnce bool, feed *pubsub.PubSub){
-  a := tfl.NewApi(config.TflAppId, config.TflApiKey)
+  a := tfl.NewApi(config.Config.Tfl.AppId, config.Config.Tfl.AppKey)
 
   doStatus(a, feed)
 
