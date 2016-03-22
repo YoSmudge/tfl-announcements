@@ -96,17 +96,30 @@ func (a *Api) GetLineStatus(line Line) (Status, error){
   return status, nil
 }
 
+type asyncLineStatus struct{
+  status    Status
+  err       error
+}
+
+func (a *Api) AsyncGetLineStatus(line Line, response chan asyncLineStatus){
+  st, err := a.GetLineStatus(line)
+  response <- asyncLineStatus{st,err}
+}
+
 func (a *Api) GetLineStatuses(lines LineList) (StatusList, error){
   var statusList StatusList
+  responses := make(chan asyncLineStatus)
+
   for _,line := range lines.lines{
-    st, err := a.GetLineStatus(line)
-    if err != nil{
-      log.WithFields(log.Fields{
-        "line": line.Id,
-        "error": err,
-      }).Error("Could not get line status")
+    go a.AsyncGetLineStatus(line,responses)
+  }
+
+  for i := 1; i <= len(lines.lines); i++{
+    rsp := <-responses
+    if rsp.err != nil{
+      log.Error(rsp.err)
     } else {
-      statusList.Statuses = append(statusList.Statuses, st)
+      statusList.Statuses = append(statusList.Statuses, rsp.status)
     }
   }
 
