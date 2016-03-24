@@ -1,4 +1,5 @@
 /tfl-announcements
+/tfl-announcements*
 /language/strings.go
 /mock-responses/
 /vendor/

@@ -27,6 +27,7 @@ type config struct{
   Tfl           tfl
   Ivona         ivona
   UpdatePeriod  updatePeriod   `yaml:"update_period"`
+  Statsd        string
 }
 
 var Config config

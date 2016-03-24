@@ -1,5 +1,5 @@
-hash: 4a47ba08259978bf6f53201cc47270b535d0638f7e296587e8597f0d2d2eeb0e
-updated: 2016-03-24T11:37:46.267201464Z
+hash: 93b2ec30d1737c739e9c52c7d8dc6dc52e087c314911b104a7e56805f6647486
+updated: 2016-03-24T17:13:33.771394243Z
 imports:
 - name: github.com/bmizerany/aws4
   version: 5fb2e72396263668edd9a2956052e402cf6c104a
@@ -26,6 +26,10 @@ imports:
   version: a0ff2567cfb70903282db057e799fd826784d41d
 - name: github.com/manucorporat/sse
   version: ee05b128a739a0fb76c7ebd3ae4810c1de808d6d
+- name: github.com/quipo/statsd
+  version: 494c2067718d0c58116be15337f466e393273617
+  subpackages:
+  - event
 - name: github.com/satori/go.uuid
   version: f9ab0dce87d815821e221626b772e3475a0d2749
 - name: github.com/Sirupsen/logrus

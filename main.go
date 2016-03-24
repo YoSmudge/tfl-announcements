@@ -8,6 +8,10 @@ import(
   log "github.com/Sirupsen/logrus"
   "github.com/voxelbrain/goptions"
   "github.com/tuxychandru/pubsub"
+  "time"
+  "runtime"
+  "fmt"
+  "github.com/quipo/statsd"
 )
 
 type options struct {
@@ -45,6 +49,8 @@ func main() {
 
   config.Load(parsedOptions.Config)
 
+  go reportStats()
+
   messageFeed := pubsub.New(1)
   go fetcher.SubscribeHandler(messageFeed, logOutput)
 
@@ -58,4 +64,45 @@ func main() {
   }
 
   fetcher.RunStatus(parsedOptions.Once, messageFeed)
+}
+
+func reportStats(){
+  var appName = "tfl_announcements"
+
+  if config.Config.Statsd == ""{
+    return
+  }
+
+  statsClient := statsd.NewStatsdClient(config.Config.Statsd, "")
+  err := statsClient.CreateSocket()
+  if err != nil{
+    log.WithFields(log.Fields{
+      "host": config.Config.Statsd,
+    }).Warning("Could not connect to statsd")
+    return
+  }
+
+  statsInterval := 10*time.Second
+  statsSender := statsd.NewStatsdBuffer(statsInterval, statsClient)
+  statsTicker := time.NewTicker(statsInterval)
+  defer statsTicker.Stop()
+  defer statsSender.Close()
+
+  for {
+    s := runtime.MemStats{}
+    runtime.ReadMemStats(&s)
+    metrics := map[string]int64{
+      "goroutines.running": int64(runtime.NumGoroutine()),
+      "memory.objects.HeapObjects": int64(s.HeapObjects),
+      "memory.Alloc": int64(s.Alloc),
+      "web.connections": int64(web.ConnectedClients),
+    }
+
+    for k,v := range metrics{
+      mName := fmt.Sprintf("%s.%s", appName, k)
+      statsSender.Gauge(mName, v)
+    }
+
+    <-statsTicker.C
+  }
 }

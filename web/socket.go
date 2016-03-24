@@ -19,7 +19,7 @@ var upgrader = websocket.Upgrader{
 }
 
 const pingInterval = time.Second*45
-var connectedClients int64 = 0
+var ConnectedClients int64 = 0
 var clientIdCounter uint64 = 0
 var statusFeed = pubsub.New(1)
 
@@ -66,7 +66,7 @@ func (c *socketClient) NewMessage(mt string, b interface{}) *socketMsg{
   m.Time = time.Now().UTC()
   m.Body = b
   m.PingInt = int64(pingInterval.Seconds())
-  m.ConnectedClients = connectedClients
+  m.ConnectedClients = ConnectedClients
 
   m.GrCount = runtime.NumGoroutine()
   s := runtime.MemStats{}
@@ -147,7 +147,7 @@ func feedHandler(w http.ResponseWriter, r *http.Request) {
     "id": c.ClientId,
   }).Debug("New socket connection")
 
-  atomic.AddInt64(&connectedClients, 1)
+  atomic.AddInt64(&ConnectedClients, 1)
 
   done := make(chan struct{})
 
@@ -186,7 +186,7 @@ func feedHandler(w http.ResponseWriter, r *http.Request) {
   }).Debug("Closing client connection")
 
   close(done)
-  atomic.AddInt64(&connectedClients, -1)
+  atomic.AddInt64(&ConnectedClients, -1)
   statusFeed.Unsub(c.Subscription)
 }
 
