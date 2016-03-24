@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <title>TFL Status Updates</title>
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.js"></script>
+  <script type="text/javascript" src="/Asset?File=websocket.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.css" />
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <table class="table table-striped">
+          <tr>
+            <th>Connection Status:</th>
+            <td id="connection-status"></td>
+          </tr>
+          <tr>
+            <th>Client ID:</th>
+            <td id="client-id"></td>
+          </tr>
+          <tr>
+            <th>Last Message:</th>
+            <td id="last-message"></td>
+          </tr>
+          <tr>
+            <th>Connected Clients:</th>
+            <td id="connected-clients"></td>
+          </tr>
+          <tr>
+            <th>Ping Interval:</th>
+            <td id="ping-interval"></td>
+          </tr>
+        </table>
+
+        <audio controls id="audio-player" preload="none"></audio>
+
+        <p class="text-muted" id="process-stats">
+      </div>
+
+      <div class="col-md-9">
+        <div class="alert alert-info">
+          <p id="current-status">&nbsp;
+        </div>
+
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Body</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+
+          <tbody id="message-log"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>

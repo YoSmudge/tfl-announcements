@@ -1,3 +1,4 @@
 line_modes: [tube]
 line_aliases:
   waterloo-city: ["Waterloo and City"]
+is_prefix: ["Suspended", "Part Suspended"]

@@ -8,9 +8,11 @@ import(
   "math"
   log "github.com/Sirupsen/logrus"
   "github.com/tuxychandru/pubsub"
+  "github.com/satori/go.uuid"
 )
 
 type StatusUpdate struct{
+  Id          uuid.UUID
   Created     time.Time
   IsFull      bool
   Text        string
@@ -64,6 +66,7 @@ func doStatus(a *tfl.Api, feed *pubsub.PubSub, isFull bool) {
     duration := time.Since(start)
 
     u := StatusUpdate{}
+    u.Id = uuid.NewV1()
     u.Created = time.Now()
     u.IsFull = true
     u.Text = statusText
@@ -107,6 +110,7 @@ func RunStatus(runOnce bool, feed *pubsub.PubSub){
     doStatus(a, feed, np.IsFull)
 
     if runOnce{
+      <- time.After(5 * time.Second)
       return
     }
 

@@ -1,10 +1,21 @@
-hash: 24fa5cda6e377a42775a350691f2b40634dda27e101b50cf9a9953462f86d61f
-updated: 2016-03-22T21:40:30.681161865Z
+hash: 4a47ba08259978bf6f53201cc47270b535d0638f7e296587e8597f0d2d2eeb0e
+updated: 2016-03-24T11:37:46.267201464Z
 imports:
 - name: github.com/bmizerany/aws4
   version: 5fb2e72396263668edd9a2956052e402cf6c104a
 - name: github.com/deepakjois/gomp3
   version: d5e87c1b3ab81a0bb9f405b82328f334b3f06865
+- name: github.com/gin-gonic/gin
+  version: 4a6bc4aac4607e253bcda67c8c5bcda693d2388e
+  subpackages:
+  - binding
+  - render
+- name: github.com/golang/protobuf
+  version: 2402d76f3d41f928c7902a765dfc872356dd3aad
+  subpackages:
+  - proto
+- name: github.com/gorilla/websocket
+  version: e2e3d8414d0fbae04004f151979f4e27c6747fe7
 - name: github.com/gregjones/httpcache
   version: 4b02602f71f4346dfbd3ef8f4d15cc2a318b32c1
 - name: github.com/hoisie/mustache
@@ -13,16 +24,22 @@ imports:
   version: 4018c8ab5e21e2ae2999322c284c51842fcdc366
 - name: github.com/jteeuwen/go-bindata
   version: a0ff2567cfb70903282db057e799fd826784d41d
+- name: github.com/manucorporat/sse
+  version: ee05b128a739a0fb76c7ebd3ae4810c1de808d6d
+- name: github.com/satori/go.uuid
+  version: f9ab0dce87d815821e221626b772e3475a0d2749
 - name: github.com/Sirupsen/logrus
   version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
 - name: github.com/tuxychandru/pubsub
   version: 9a40b5ef119cc81d1ca384b2726c4d58be07ddee
 - name: github.com/voxelbrain/goptions
   version: 26cb8b04692384f4dc269de3b5fcf3e2ef78573e
-- name: golang.org/x/sys
-  version: 9d4e42a20653790449273b3c85e67d6d8bae6e2e
+- name: golang.org/x/net
+  version: f315505cf3349909cdf013ea56690da34e96a451
   subpackages:
-  - unix
+  - context
+- name: gopkg.in/go-playground/validator.v8
+  version: c193cecd124b5cc722d7ee5538e945bdb3348435
 - name: gopkg.in/yaml.v2
   version: a83829b6f1293c91addabc89d0571c246397bbf4
 devImports: []

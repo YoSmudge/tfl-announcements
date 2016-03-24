@@ -4,6 +4,7 @@ import(
   "github.com/samarudge/tfl-announcements/fetcher"
   "github.com/samarudge/tfl-announcements/afplay"
   "github.com/samarudge/tfl-announcements/config"
+  "github.com/samarudge/tfl-announcements/web"
   log "github.com/Sirupsen/logrus"
   "github.com/voxelbrain/goptions"
   "github.com/tuxychandru/pubsub"
@@ -14,6 +15,8 @@ type options struct {
   Verbose   bool            `goptions:"-v, --verbose, description='Log verbosely'"`
   Once      bool            `goptions:"-o, --once, description='Run once then exit'"`
   Afplay    bool            `goptions:"--afplay, description='Play audio with OS/X afplay command'"`
+  Web       bool            `goptions:"--web, description='Run web player'"`
+  WebBind   string          `goptions:"--web-bind, description='Bind address for web player'"`
   Help      goptions.Help   `goptions:"-h, --help, description='Show help'"`
 }
 
@@ -28,6 +31,7 @@ func logOutput(u *fetcher.StatusUpdate){
 func main() {
   parsedOptions := options{}
   parsedOptions.Config = "./config.yml"
+  parsedOptions.WebBind = ":8001"
 
   goptions.ParseAndFail(&parsedOptions)
 
@@ -46,6 +50,11 @@ func main() {
 
   if parsedOptions.Afplay{
     go fetcher.SubscribeHandler(messageFeed, afplay.Afplay)
+  }
+
+  if parsedOptions.Web{
+    go fetcher.SubscribeHandler(messageFeed, web.SendUpdate)
+    go web.StartServer(parsedOptions.WebBind)
   }
 
   fetcher.RunStatus(parsedOptions.Once, messageFeed)

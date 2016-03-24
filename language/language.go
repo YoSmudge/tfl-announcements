@@ -49,3 +49,13 @@ func LineModes() map[string]bool{
 
   return rsp
 }
+
+func IsPrefix(status string) bool{
+  for _,st := range GetRawParam("config")["is_prefix"].([]interface{}){
+    if st.(string) == status{
+      return true
+    }
+  }
+
+  return false
+}

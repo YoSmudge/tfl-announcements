@@ -77,14 +77,21 @@ func (s *StatusUpdate) Generate(fullUpdate bool) (string, error){
         return "", err
       }
 
+      entireDetailsString := "entire_line"
+      partDetailsString := "line_details"
+      if language.IsPrefix(statusDescription){
+        entireDetailsString = fmt.Sprintf("%s_is", entireDetailsString)
+        partDetailsString = fmt.Sprintf("%s_is", partDetailsString)
+      }
+
       var lineDetails string
       if status.WholeLine{
-        lineDetails = language.RenderString("strings", "entire_line", language.H{
+        lineDetails = language.RenderString("strings", entireDetailsString, language.H{
           "line_name": LineName(status.Line.Name, status.Line.Mode),
           "line_status": statusDescription,
         })
       } else {
-        lineDetails = language.RenderString("strings", "line_status", language.H{
+        lineDetails = language.RenderString("strings", partDetailsString, language.H{
           "line_name": LineName(status.Line.Name, status.Line.Mode),
           "line_status": statusDescription,
         })

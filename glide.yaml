@@ -9,3 +9,6 @@ import:
 - package: github.com/jpadilla/ivona-go
 - package: github.com/deepakjois/gomp3
 - package: github.com/tuxychandru/pubsub
+- package: github.com/gin-gonic/gin
+- package: github.com/gorilla/websocket
+- package: github.com/satori/go.uuid
