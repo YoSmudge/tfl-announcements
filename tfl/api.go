@@ -165,6 +165,26 @@ type severityCode struct{
   Description     string
 }
 
+func (a *Api) GetSeverities() ([]string, error){
+  statuses := make(map[string]bool)
+  codes := []severityCode{}
+  err := a.DoCall("/Line/Meta/Severity", &codes)
+  if err != nil{
+    return []string{}, err
+  }
+
+  for _,code := range codes{
+    statuses[code.Description] = true
+  }
+
+  var statusDescriptions []string
+  for codeDesc, _ := range statuses{
+    statusDescriptions = append(statusDescriptions, codeDesc)
+  }
+
+  return statusDescriptions, nil
+}
+
 func (a *Api) GetSeverityFromCode(mode string, severityLevel float64) (string, error){
   codes := []severityCode{}
   err := a.DoCall("/Line/Meta/Severity", &codes)

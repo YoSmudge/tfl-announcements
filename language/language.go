@@ -59,3 +59,13 @@ func IsPrefix(status string) bool{
 
   return false
 }
+
+func AdditionalSeverities() []string{
+  sv := GetRawParam("config")["severity_additional"].([]interface{})
+  var severities []string
+
+  for _,s := range sv{
+    severities = append(severities, s.(string))
+  }
+  return severities
+}

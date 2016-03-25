@@ -49,11 +49,23 @@ func (s *StatusUpdate) CoerceStatusUpdate(status Status) string{
     }
   }
 
-  statusDesc, _ := s.Api.GetSeverityFromCode(status.Line.Mode, status.LineStatus)
-  statusPrefix := strings.ToLower(statusDesc)
-  if strings.HasPrefix(strings.ToLower(statusMsg), statusPrefix){
-    statusMsg = strings.TrimLeft(statusMsg[len(statusPrefix):len(statusMsg)], " ")
+  severities, _ := s.Api.GetSeverities()
+  fmt.Println(strings.Join(severities, ","))
+  fmt.Println("--->", status.Line.Name, statusMsg)
+  severities = append(severities, language.AdditionalSeverities()...)
+  fixedMsg := statusMsg
+  for _,sv := range severities{
+    statusPrefix := strings.ToLower(sv)
+    if strings.HasPrefix(strings.ToLower(statusMsg), statusPrefix){
+      trimmedMsg := strings.TrimLeft(statusMsg[len(statusPrefix):len(statusMsg)], " ")
+      if len(trimmedMsg) < len(fixedMsg){
+        fixedMsg = trimmedMsg
+      }
+    }
   }
+  statusMsg = fixedMsg
+  fmt.Println(statusMsg)
+  fmt.Println("---")
 
   statusMsg = strings.Split(statusMsg, ".")[0]
 

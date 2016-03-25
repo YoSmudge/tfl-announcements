@@ -3,3 +3,4 @@ line_aliases:
   waterloo-city: ["Waterloo and City"]
   hammersmith-city: ["Hammersmith and City"]
 is_prefix: ["Suspended", "Part Suspended"]
+severity_additional: ["No service", "Severe Delays"]

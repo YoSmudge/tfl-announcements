@@ -65,7 +65,7 @@ func (c ivonaCachedItems) addCache(text string, audio []byte){
 
   sort.Sort(cachedByDate(c))
   if len(c) >= maxCacheLength{
-    for n,ci := range c{
+    for n,_ := range c{
       if n > maxCacheLength{
         c = append(c[:n], c[n+1:]...)
       }
