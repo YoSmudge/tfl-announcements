@@ -48,6 +48,7 @@
       $('#last-message').text(msgBody.js_time)
       $('#connected-clients').text(msgBody.connected_clients)
 
+      msgBody.memory_usage = Humanize.fileSize(msgBody.memory_usage)
       $('#process-stats').html(Mustache.render(
         "Stats: Objects: {{heap_objects}}, Goroutines: {{goroutine_count}}, Memory: {{memory_usage}}",
         msgBody
