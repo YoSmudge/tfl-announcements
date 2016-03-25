@@ -24,7 +24,11 @@ Then to run;
 ./tfl-announcements
 ```
 
-It will log out the status generated. If you're on OS/X, run
+It will log out the status generated.
+
+You can start a web interface which will play the audio via your browser with the `--web` flag, the default port is `:8001` but this can be changed with the `--web-bind` option. Should work in any browser with support for Websockets and MP3 HTML5 audio.
+
+If you're on OS/X, run
 
 ```
 ./tfl-announcements --afplay
