@@ -50,8 +50,6 @@ func (s *StatusUpdate) CoerceStatusUpdate(status Status) string{
   }
 
   severities, _ := s.Api.GetSeverities()
-  fmt.Println(strings.Join(severities, ","))
-  fmt.Println("--->", status.Line.Name, statusMsg)
   severities = append(severities, language.AdditionalSeverities()...)
   fixedMsg := statusMsg
   for _,sv := range severities{
@@ -64,8 +62,6 @@ func (s *StatusUpdate) CoerceStatusUpdate(status Status) string{
     }
   }
   statusMsg = fixedMsg
-  fmt.Println(statusMsg)
-  fmt.Println("---")
 
   statusMsg = strings.Split(statusMsg, ".")[0]
 
