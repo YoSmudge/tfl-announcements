@@ -30,17 +30,25 @@ func New(Access string, Secret string) (*Ivona, error){
 }
 
 func (i *Ivona) GetSpeak(text string) ([]byte, error){
-  o := iv.NewSpeechOptions(text)
-  o.Voice = i.Voice
+  var audio []byte
 
-  r, err := i.Client.CreateSpeech(o)
-  if err != nil{
-    log.WithFields(log.Fields{
-      "error": err,
-      "text": text,
-    }).Error("Error talking to Ivona Cloud")
-    return []byte{}, err
+  inCache, audio := Cache.checkCache(text)
+  if !inCache{
+    o := iv.NewSpeechOptions(text)
+    o.Voice = i.Voice
+
+    r, err := i.Client.CreateSpeech(o)
+    if err != nil{
+      log.WithFields(log.Fields{
+        "error": err,
+        "text": text,
+      }).Error("Error talking to Ivona Cloud")
+      return []byte{}, err
+    }
+
+    Cache.addCache(text, r.Audio)
+    audio = r.Audio
   }
 
-  return r.Audio, nil
+  return audio, nil
 }
